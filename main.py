@@ -27,6 +27,12 @@ def main() -> None:
     path = os.path.join(out_dir, "entry.txt")
     with open(path, "w", encoding="utf-8") as f:
         f.write(POEM)
+    # Verify the round-trip: the sealed scorer reads this file back, so
+    # confirm what landed on disk is byte-identical and still in range.
+    with open(path, encoding="utf-8") as f:
+        written = f.read()
+    if written != POEM or not (1 <= len(written) <= 280):
+        raise SystemExit("entry.txt failed verification after write")
     print(f"wrote {len(POEM)} characters to {path}")
 
 
